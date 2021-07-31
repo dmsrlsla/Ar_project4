@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="Grammy" size="1.000000 0.610782" />
+    <ImageTarget name="Test8" size="1.000000 0.562500" />
+    <ImageTarget name="TargetImage4" size="1.000000 1.000000" />
+    <ImageTarget name="Card_Rectangle" size="1.000000 1.000000" />
+    <ImageTarget name="Card_Square" size="1.000000 1.000000" />
+    <ImageTarget name="Square_Test01" size="1.000000 1.000000" />
+    <ImageTarget name="TargetImage3" size="1.000000 1.001451" />
+    <ImageTarget name="2" size="1.000000 0.610782" />
+    <ImageTarget name="Gramme" size="0.100000 0.061078" />
+  </Tracking>
+</QCARConfig>
