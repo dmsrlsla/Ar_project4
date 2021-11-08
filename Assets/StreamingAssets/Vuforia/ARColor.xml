@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="3MiLook14" size="1.000000 1.328421" />
     <ImageTarget name="4JunDong_New" size="1.000000 1.000000" />
     <ImageTarget name="1GamYoungBold" size="1.000000 0.684211" />
     <ImageTarget name="2PungNal" size="1.000000 0.707175" />
-    <ImageTarget name="3MiLook13" size="1.000000 1.328421" />
   </Tracking>
 </QCARConfig>

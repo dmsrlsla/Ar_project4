@@ -54,10 +54,17 @@ public class BaseColor : MonoBehaviour
 
     #endregion
 
-    Coroutine coFindTime1 = null;
-    Coroutine coFindTime2 = null;
-    Coroutine coFindTime3 = null;
-    Coroutine coFindTime4 = null;
+    IEnumerator coFindTime1 = null;
+    IEnumerator coFindTime2 = null;
+    IEnumerator coFindTime3 = null;
+    IEnumerator coFindTime4 = null;
+    IEnumerator coFindTime5 = null;
+
+    Rect FindRect;
+    Vector4 _UvTopLeft;
+    Vector4 _UvButtomLeft;
+    Vector4 _UvTopRight;
+    Vector4 _UvBottomRight;
 
     protected virtual void Start()
     {
@@ -69,25 +76,59 @@ public class BaseColor : MonoBehaviour
         BottomLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, -Half_H);
         TopRight_Pl_W = Center_Card + new Vector3(Half_W, 0, Half_H);
         BottomRight_Pl_W = Center_Card + new Vector3(Half_W, 0, -Half_H);
+        ColorTe = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        FindRect = new Rect(0, 0, Screen.width, Screen.height);
+        _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
+        _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
+        _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
+        _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
     }
 
 
     public void ShotAndColor()
     {
-
-
-
-        coFindTime1 = StartCoroutine(ScreenShot());
-        coFindTime2 = StartCoroutine(Get_Position());
-
-        if (IfSaveColor)
+        foreach (var item in ColorParts)
         {
-            //Current moment
-            //当前时刻
-            string _time = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-            coFindTime3 = StartCoroutine(Save_Position(_time)) ;
-            coFindTime4 = StartCoroutine(SaveShot(_time));
+            //ColorTe = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+            FindRect = new Rect(0, 0, Screen.width, Screen.height);
+            _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
+            _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
+            _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
+            _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
+            ColorTe.ReadPixels(FindRect, 0, 0);
+            ColorTe.Apply();
+
+
+            item.GetComponent<Renderer>().material.mainTexture = ColorTe;
+
+
+            Matrix4x4 P = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, BLrenderIntoTexture);
+            Matrix4x4 V = Camera.main.worldToCameraMatrix;
+            VP = P * V;
+
+
+            item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
+            item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
+            item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
+            item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+
+            item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
         }
+
+        //coFindTime1 = ScreenShot();
+        //StartCoroutine(coFindTime1);
+        //coFindTime2 = Get_Position();
+        //StartCoroutine(coFindTime2);
+
+        //if (IfSaveColor)
+        //{
+        //    //Current moment
+        //    string _time = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        //    coFindTime3 = Save_Position(_time) ;
+        //    StartCoroutine(coFindTime3);
+        //    coFindTime4 = SaveShot(_time);
+        //    StartCoroutine(coFindTime4);
+        //}
     }
 
     //Transfer information to shader

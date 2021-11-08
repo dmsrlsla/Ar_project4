@@ -56,8 +56,7 @@ public class CsMainUI : MonoBehaviour
     public void SetCameraOn()
     {
         m_btnMiddleStart.gameObject.SetActive(false);
-        m_trImgMarkerRed.gameObject.SetActive(true);
-        m_btnMiddleStart.gameObject.SetActive(false);
+        //m_trImgMarkerRed.gameObject.SetActive(true);
     }
 
     public void FindTargetUI(bool bFind)
