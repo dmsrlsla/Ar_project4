@@ -66,6 +66,8 @@ public class BaseColor : MonoBehaviour
     Vector4 _UvTopRight;
     Vector4 _UvBottomRight;
 
+    public RectTransform rectT;
+
     protected virtual void Start()
     {
        
@@ -89,7 +91,13 @@ public class BaseColor : MonoBehaviour
     {
         foreach (var item in ColorParts)
         {
-            //ColorTe = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+            Vector3[] corners = new Vector3[4];
+            rectT.GetWorldCorners(corners);
+            var startX = corners[0].x;
+            var startY = corners[0].y;
+
+            int width = (int)corners[3].x - (int)corners[0].x;
+            int height = (int)corners[1].y - (int)corners[0].y;
             FindRect = new Rect(0, 0, Screen.width, Screen.height);
             _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
             _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
@@ -114,21 +122,53 @@ public class BaseColor : MonoBehaviour
 
             item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
         }
+    }
 
-        //coFindTime1 = ScreenShot();
-        //StartCoroutine(coFindTime1);
-        //coFindTime2 = Get_Position();
-        //StartCoroutine(coFindTime2);
+    public IEnumerator ShotAndColor2()
+    {
 
-        //if (IfSaveColor)
-        //{
-        //    //Current moment
-        //    string _time = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-        //    coFindTime3 = Save_Position(_time) ;
-        //    StartCoroutine(coFindTime3);
-        //    coFindTime4 = SaveShot(_time);
-        //    StartCoroutine(coFindTime4);
-        //}
+        foreach (var item in ColorParts)
+        {
+            //Vector3[] corners = new Vector3[4];
+            //rectT.GetWorldCorners(corners);
+            //var startX = corners[0].x;
+            //var startY = corners[0].y;
+
+            //int width = (int)corners[3].x - (int)corners[0].x;
+            //int height = (int)corners[1].y - (int)corners[0].y;
+            Half_W = 0.5f * ImageWidth;
+            Half_H = 0.5f * ImageHeight;
+
+            TopLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, Half_H);
+            BottomLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, -Half_H);
+            TopRight_Pl_W = Center_Card + new Vector3(Half_W, 0, Half_H);
+            BottomRight_Pl_W = Center_Card + new Vector3(Half_W, 0, -Half_H);
+
+            yield return new WaitForEndOfFrame();
+            FindRect = new Rect(0, 0, Screen.width, Screen.height);
+            _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
+            _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
+            _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
+            _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
+            ColorTe.ReadPixels(FindRect, 0, 0);
+            ColorTe.Apply();
+
+
+            item.GetComponent<Renderer>().material.mainTexture = ColorTe;
+
+
+            Matrix4x4 P = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, BLrenderIntoTexture);
+            Matrix4x4 V = Camera.main.worldToCameraMatrix;
+            VP = P * V;
+
+
+            item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
+            item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
+            item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
+            item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+
+            item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
+        }
     }
 
     //Transfer information to shader
