@@ -105,8 +105,14 @@ public class ColorCenter : BaseColor
             yield return new WaitForSeconds(0.3f);
 
 
+            //TrackerManager.Instance.GetTracker<PositionalDeviceTracker>().Reset();
             //RemoveTexture();
         }
+    }
+
+    public IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(0.3f);
     }
 
     public void OnTargetFind()
@@ -117,11 +123,14 @@ public class ColorCenter : BaseColor
 
     public void OnColoringOn()
     {
+        bStartArCamera = true;
         StartCoroutine(DelayInfinity());
     }
 
     public void OnColoringOff()
     {
+        bStartArCamera = false;
+        StopCoroutine(ShotAndColor2());
         StopCoroutine(DelayInfinity());
         TrackerManager.Instance.GetTracker<PositionalDeviceTracker>().Reset();
         RemoveTexture();
