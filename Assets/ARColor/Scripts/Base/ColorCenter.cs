@@ -18,9 +18,6 @@ public class ColorCenter : BaseColor
 
     public GameObject ARCamera;
 
-    public GameObject UICanvas;
-
-    CsMainUI MainUI;
 
     private bool ifCanColor = true;
 
@@ -33,7 +30,7 @@ public class ColorCenter : BaseColor
     protected override void Start()
     {
         base.Start();
-        MainUI = UICanvas.GetComponent<CsMainUI>();
+
         plane = new PlaneManager();
     }
 
@@ -119,6 +116,14 @@ public class ColorCenter : BaseColor
     {
         MainUI.FindTargetUI(true);
         StartCoroutine(WaitFind());
+    }
+
+    public void OnTargetLost()
+    {
+        if (MainUI.Arcamera.enabled)
+        {
+            MainUI.FindTargetUI(false);
+        }
     }
 
     public void OnColoringOn()

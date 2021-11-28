@@ -68,9 +68,13 @@ public class BaseColor : MonoBehaviour
 
     public RectTransform rectT;
 
+    public GameObject UICanvas;
+
+    protected CsMainUI MainUI;
+
     protected virtual void Start()
     {
-       
+        MainUI = UICanvas.GetComponent<CsMainUI>();
         Half_W = 0.5f * ImageWidth;
         Half_H = 0.5f * ImageHeight;
 
@@ -129,13 +133,6 @@ public class BaseColor : MonoBehaviour
 
         foreach (var item in ColorParts)
         {
-            //Vector3[] corners = new Vector3[4];
-            //rectT.GetWorldCorners(corners);
-            //var startX = corners[0].x;
-            //var startY = corners[0].y;
-
-            //int width = (int)corners[3].x - (int)corners[0].x;
-            //int height = (int)corners[1].y - (int)corners[0].y;
             Half_W = 0.5f * ImageWidth;
             Half_H = 0.5f * ImageHeight;
 
@@ -157,8 +154,12 @@ public class BaseColor : MonoBehaviour
             item.GetComponent<Renderer>().material.mainTexture = ColorTe;
 
 
-            Matrix4x4 P = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, BLrenderIntoTexture);
-            Matrix4x4 V = Camera.main.worldToCameraMatrix;
+            if(!MainUI.Arcamera.enabled)
+            {
+                yield return null;
+            }
+            Matrix4x4 P = GL.GetGPUProjectionMatrix(MainUI.Arcamera.projectionMatrix, BLrenderIntoTexture);
+            Matrix4x4 V = MainUI.Arcamera.worldToCameraMatrix;
             VP = P * V;
 
 

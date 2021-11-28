@@ -16,6 +16,9 @@ public class CsStartUI : MonoBehaviour
     [SerializeField]
     Transform m_trTutorialPage;
 
+    [SerializeField]
+    Transform m_trClosetPage;
+
     Transform m_trTutorialMini1;
     Transform m_trTutorialMini2;
     Transform m_trTutorialMini3;
@@ -35,6 +38,8 @@ public class CsStartUI : MonoBehaviour
     List<Transform> listTr = new List<Transform>();
 
     bool firstTouch = false;
+
+    bool TutorialTouch = false;
 
     //스와이프와 터치
     public void Swipe1()
@@ -61,12 +66,19 @@ public class CsStartUI : MonoBehaviour
                         if (PageNum - 1 <=0)
                             return;
 
-                        OnTutorialSlide(listTr[PageNum - 1]);
-                        //listTr[PageNum + 1].DOMoveX(720, 1f);
-                        PageNum--;
-                        MouseBeganPos = Vector2.zero;
-                        MouseEndedPos = Vector2.zero;
-                        MouseDif = Vector2.zero;
+                        if (listTr[PageNum - 1] != null)
+                        {
+                            OnTutorialSlide(listTr[PageNum - 1]);
+                        }
+                        if (listTr[PageNum - 2] != null)
+                        {
+                            OnTutorialSlide(listTr[PageNum - 2]);
+                        }
+                            //listTr[PageNum + 1].DOMoveX(720, 1f);
+                            PageNum--;
+                            MouseBeganPos = Vector2.zero;
+                            MouseEndedPos = Vector2.zero;
+                            MouseDif = Vector2.zero;
                     }
                 }
                 //터치.
@@ -102,12 +114,22 @@ public class CsStartUI : MonoBehaviour
                     if (PageNum-1 <= 0)
                         return;
 
-                    OnTutorialSlide(listTr[PageNum-1]);
-                    //listTr[PageNum + 1].DOMoveX(720, 1f);
-                    PageNum--;
-                    MouseBeganPos = Vector2.zero;
-                    MouseEndedPos = Vector2.zero;
-                    MouseDif = Vector2.zero;
+                    if (listTr[PageNum - 1] != null && listTr[PageNum - 2] != null)
+                    {
+                        if (listTr[PageNum - 1] != null)
+                        {
+                            OnTutorialSlide(listTr[PageNum - 1]);
+                        }
+                        if (listTr[PageNum - 2] != null)
+                        {
+                            OnTutorialSlide(listTr[PageNum - 2]);
+                        }
+                        //listTr[PageNum + 1].DOMoveX(720, 1f);
+                        PageNum--;
+                        MouseBeganPos = Vector2.zero;
+                        MouseEndedPos = Vector2.zero;
+                        MouseDif = Vector2.zero;
+                    }
                 }
             }
         }
@@ -115,81 +137,65 @@ public class CsStartUI : MonoBehaviour
 
     private void OnTutorialSlide(Transform trTutorial)
     {
-        trTutorial.GetComponent<Animator>().enabled = true;
+        Animator animator = trTutorial.GetComponent<Animator>();
+
+        if (animator == null)
+            return;
+
+        if(!animator.enabled)
+        {
+            animator.enabled = true;
+        }
+        else
+        {
+            animator.SetBool("Next", true);
+        }
     }
-
-    ////스와이프
-    //public void Swipe2()
-    //{
-    //    if (Input.touches.Length > 0)
-    //    {
-    //        Touch t = Input.GetTouch(0);
-    //        if (t.phase == TouchPhase.Began)
-    //        {
-    //            //save began touch 2d point
-    //            firstPressPos = new Vector2(t.position.x, t.position.y);
-    //        }
-    //        if (t.phase == TouchPhase.Ended)
-    //        {
-    //            //save ended touch 2d point
-    //            secondPressPos = new Vector2(t.position.x, t.position.y);
-
-    //            //create vector from the two points
-    //            currentSwipe = new Vector3(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
-
-    //            //normalize the 2d vector
-    //            currentSwipe.Normalize();
-
-    //            //swipe upwards
-    //            if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
-    //            {
-    //                Debug.Log("up swipe");
-    //            }
-    //            //swipe down
-    //            if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
-    //            {
-    //                Debug.Log("down swipe");
-    //            }
-    //            //swipe left
-    //            if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
-    //            {
-    //                Debug.Log("left swipe");
-    //            }
-    //            //swipe right
-    //            if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
-    //            {
-    //                Debug.Log("right swipe");
-    //            }
-    //        }
-    //    }
-    //}
 
     // Start is called before the first frame update
     void Start()
-    {
-        //m_trTutorialMini1 = m_trTutorialPage.GetChild(0);
-        //m_trTutorialMini2 = m_trTutorialPage.GetChild(1);
-        //m_trTutorialMini3 = m_trTutorialPage.GetChild(2);
-
+    { 
         listTr.Add(m_trTutorialPage.GetChild(0));
         listTr.Add(m_trTutorialPage.GetChild(1));
         listTr.Add(m_trTutorialPage.GetChild(2));
 
         PageNum = listTr.Count;
+
+        m_trClosetPage.gameObject.SetActive(false);
+
+        firstTouch = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         //Swipe1();
-        if (Input.GetMouseButtonDown(0) && !firstTouch)
+        if (Input.GetMouseButtonDown(0) && PlayerPrefs.GetInt("CheckFirst") == 0)
+        {
+            PlayerPrefs.SetInt("CheckFirst", 1);
+            m_trClosetPage.gameObject.SetActive(true);
+            StartCoroutine(FadeOut2(m_trLoadingPage.GetComponent<Image>()));
+            TutorialTouch = true;
+        }
+        else if (firstTouch == true && PlayerPrefs.GetInt("Second") != 0 && TutorialTouch == false)
         {
             StartCoroutine(FadeOut2(m_trLoadingPage.GetComponent<Image>()));
+            OnStartBtnClose();
         }
-        else
+        else if (Input.GetMouseButtonDown(0) && firstTouch == false)
         {
+            // 다음화면 넘어가기 위해서
+            firstTouch = true;
+        }
+        else if (TutorialTouch == true) // 튜토리얼 활성화중이라면
+        {
+            // 튜토리얼 슬라이드
+#if UNITY_EDITOR
             Swipe1();
+#endif
+#if UNITY_ANDROID || UNITY_IOS
             Swipe2();
+#endif
         }
     }
 
@@ -221,7 +227,7 @@ public class CsStartUI : MonoBehaviour
 
     public void OnStartBtnClose()
     {
-        Debug.LogError("페이지 넘김");
+        Debug.Log("카메라 화면으로 넘김");
         SceneManager.LoadScene("TrackingScenes");
     }
 }

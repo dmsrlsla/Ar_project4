@@ -21,7 +21,7 @@ public class CsMainUI : MonoBehaviour
     ColorCenter ColorCenters;
 
     [SerializeField]
-    Camera Arcamera;
+    public Camera Arcamera;
 
     [SerializeField]
     Camera TargetModelcamera;
@@ -328,11 +328,14 @@ public class CsMainUI : MonoBehaviour
         {
             if (TargetModel != null)
             {
-                Arcamera.gameObject.SetActive(false);
+                StopCoroutine(ColorCenters.ShotAndColor2());
+                Arcamera.enabled = false;
                 TargetModelcamera.gameObject.SetActive(true);
 
                 m_CheckModel = Instantiate<CsCheckOnModel>(TargetModel);
                 m_CheckModel.GetComponent<MeshRenderer>().enabled = true;
+
+                TargetModel.GetComponent<MeshRenderer>().enabled = false;
 
                 Texture2D tex = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
                 tex = m_CheckModel.GetComponent<MeshRenderer>().materials[0].GetTexture("_MainTex") as Texture2D;
@@ -346,26 +349,33 @@ public class CsMainUI : MonoBehaviour
                 m_CheckModel.transform.DOMove(m_CheckModel.MovePosition, 1.0f);
                 m_CheckModel.transform.DORotate(m_CheckModel.MoveRotation, 1.0f);
                 m_CheckModel.GetComponent<MeshRenderer>().materials[0].SetTexture("_MainTex", m_texIns);
-                StopCoroutine(ColorCenters.ShotAndColor2());
+
                 ColorCenters.bStartArCamera = true;
                 IsComplate = true;
+                StopCoroutine(ColorCenters.ShotAndColor2());
             }
             else
             {
                 Debug.LogError("≈∏∞Ÿ¿Ã æ¯¿Ω");
+                FindTargetUI(false);
             }
         }
         else
         {
-            Arcamera.gameObject.SetActive(true);
+            Arcamera.enabled = true;
             TargetModelcamera.gameObject.SetActive(false);
 
             Destroy(m_CheckModel.gameObject);
             Destroy(m_texIns);
 
+            ColorCenters.bStartArCamera = false;
             TargetModel = null;
             IsComplate = false;
             ColorCenters.ResetModel();
+            ColorCenters.OnColoringOff();
+            ColorProcessUI(false);
+            FindTargetUI(false);
+
         }
     }
 }
