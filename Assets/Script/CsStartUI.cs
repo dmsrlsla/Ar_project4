@@ -173,11 +173,12 @@ public class CsStartUI : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && PlayerPrefs.GetInt("CheckFirst") == 0)
         {
             PlayerPrefs.SetInt("CheckFirst", 1);
+            PlayerPrefs.Save();
             m_trClosetPage.gameObject.SetActive(true);
             StartCoroutine(FadeOut2(m_trLoadingPage.GetComponent<Image>()));
             TutorialTouch = true;
         }
-        else if (firstTouch == true && PlayerPrefs.GetInt("Second") != 0 && TutorialTouch == false)
+        else if (firstTouch == true && PlayerPrefs.GetInt("CheckFirst") != 0 && TutorialTouch == false)
         {
             StartCoroutine(FadeOut2(m_trLoadingPage.GetComponent<Image>()));
             OnStartBtnClose();

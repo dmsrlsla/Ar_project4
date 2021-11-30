@@ -13,6 +13,12 @@ public class CsCheckOnModel : MonoBehaviour
     [SerializeField]
     public Vector3 MoveRotation;
 
+    [SerializeField]
+    public float Width = 1.0f;
+
+    [SerializeField]
+    public float Height = 1.0f;
+
     // Start is called before the first frame update
     void Start()
     {

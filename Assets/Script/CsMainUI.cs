@@ -44,6 +44,8 @@ public class CsMainUI : MonoBehaviour
 
     Transform m_EndUI;
 
+    Transform m_trProcess;
+
     AudioSource m_BGMPlayer;
 
     bool IsComplate;
@@ -177,8 +179,9 @@ public class CsMainUI : MonoBehaviour
         m_trImgMarkerBlue.gameObject.SetActive(false);
 
         m_Btn_Capture = m_trBottomUI.Find("Btn_Capture").GetComponent<Button>();
-        m_Btn_ProcessOn = m_trBottomUI.Find("Btn_ProcessOn").GetComponent<Button>();
-        m_Btn_ProcessOff = m_trBottomUI.Find("Btn_ProcessOff").GetComponent<Button>();
+        m_trProcess = m_trBottomUI.Find("Process").transform;
+        m_Btn_ProcessOn = m_trProcess.Find("Btn_ProcessOn").GetComponent<Button>();
+        m_Btn_ProcessOff = m_trProcess.Find("Btn_ProcessOff").GetComponent<Button>();
         m_Btn_Complate = m_trBottomUI.Find("Btn_Complate").GetComponent<Button>();
 
         m_BGMPlayer = transform.GetComponent<AudioSource>();
@@ -297,21 +300,8 @@ public class CsMainUI : MonoBehaviour
         m_Btn_ProcessOn.gameObject.SetActive(false);
         m_Btn_ProcessOff.gameObject.SetActive(true);
 
-        if(TargetModel.name == "3MiLook")
-        {
-            ColorCenters.ImageWidth = 1.35f;
-            ColorCenters.ImageHeight = 1.35f;
-        }
-        else if (TargetModel.name == "1GamYoung")
-        {
-            ColorCenters.ImageWidth = 0.9f;
-            ColorCenters.ImageHeight = 0.9f;
-        }
-        else
-        {
-            ColorCenters.ImageWidth = 1f;
-            ColorCenters.ImageHeight = 1f;
-        }
+        ColorCenters.ImageWidth = TargetModel.Width;
+        ColorCenters.ImageHeight = TargetModel.Height;
         ColorCenters.OnColoringOn();
     }
 
@@ -328,6 +318,7 @@ public class CsMainUI : MonoBehaviour
         {
             if (TargetModel != null)
             {
+                m_trProcess.gameObject.SetActive(false);
                 StopCoroutine(ColorCenters.ShotAndColor2());
                 Arcamera.enabled = false;
                 TargetModelcamera.gameObject.SetActive(true);
@@ -358,10 +349,12 @@ public class CsMainUI : MonoBehaviour
             {
                 Debug.LogError("≈∏∞Ÿ¿Ã æ¯¿Ω");
                 FindTargetUI(false);
+                m_trProcess.gameObject.SetActive(true);
             }
         }
         else
         {
+            m_trProcess.gameObject.SetActive(true);
             Arcamera.enabled = true;
             TargetModelcamera.gameObject.SetActive(false);
 
