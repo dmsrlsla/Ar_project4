@@ -75,6 +75,10 @@ public class BaseColor : MonoBehaviour
     protected virtual void Start()
     {
         MainUI = UICanvas.GetComponent<CsMainUI>();
+    }
+
+    protected void SetNewMaterial()
+    {
         Half_W = 0.5f * ImageWidth;
         Half_H = 0.5f * ImageHeight;
 
@@ -88,6 +92,23 @@ public class BaseColor : MonoBehaviour
         _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
         _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
         _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
+    }
+
+    protected void ResetMaterial()
+    {
+        Half_W = 0.5f * 1;
+        Half_H = 0.5f * 1;
+
+        TopLeft_Pl_W = Vector3.zero;
+        BottomLeft_Pl_W = Vector3.zero;
+        TopRight_Pl_W = Vector3.zero;
+        BottomRight_Pl_W = Vector3.zero;
+        ColorTe = null;
+        FindRect = new Rect(0, 0, Screen.width, Screen.height);
+        _UvTopLeft = Vector4.zero;
+        _UvButtomLeft = Vector4.zero;
+        _UvTopRight = Vector4.zero;
+        _UvBottomRight = Vector4.zero;
     }
 
 

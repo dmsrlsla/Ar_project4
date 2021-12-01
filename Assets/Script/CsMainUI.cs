@@ -235,7 +235,6 @@ public class CsMainUI : MonoBehaviour
         if (bFind)
         {
             m_Btn_ProcessOn.gameObject.SetActive(false);
-            Debug.LogError("깜박");
             m_Btn_ProcessOff.gameObject.SetActive(true); // 컬러 기능 끄기 버튼 활성화
         }
         else
@@ -337,8 +336,8 @@ public class CsMainUI : MonoBehaviour
                     Debug.LogError("못가져옴");
                 }
 
-                m_CheckModel.transform.DOMove(m_CheckModel.MovePosition, 1.0f);
-                m_CheckModel.transform.DORotate(m_CheckModel.MoveRotation, 1.0f);
+                m_CheckModel.transform.DOMove(TargetModel.MovePosition, 1.0f);
+                m_CheckModel.transform.DORotate(TargetModel.MoveRotation, 1.0f);
                 m_CheckModel.GetComponent<MeshRenderer>().materials[0].SetTexture("_MainTex", m_texIns);
 
                 ColorCenters.bStartArCamera = true;

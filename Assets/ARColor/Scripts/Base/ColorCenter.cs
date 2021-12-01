@@ -114,12 +114,14 @@ public class ColorCenter : BaseColor
 
     public void OnTargetFind()
     {
+        SetNewMaterial();
         MainUI.FindTargetUI(true);
         StartCoroutine(WaitFind());
     }
 
     public void OnTargetLost()
     {
+        ResetMaterial();
         if (MainUI.Arcamera.enabled)
         {
             MainUI.FindTargetUI(false);
@@ -129,6 +131,7 @@ public class ColorCenter : BaseColor
     public void OnColoringOn()
     {
         bStartArCamera = true;
+        SetNewMaterial();
         StartCoroutine(DelayInfinity());
     }
 
@@ -137,6 +140,7 @@ public class ColorCenter : BaseColor
         bStartArCamera = false;
         StopCoroutine(ShotAndColor2());
         StopCoroutine(DelayInfinity());
+        ResetMaterial();
         TrackerManager.Instance.GetTracker<PositionalDeviceTracker>().Reset();
         RemoveTexture();
     }
