@@ -6,6 +6,7 @@ public class CsCheckOnModel : MonoBehaviour
 {
     MeshRenderer mesh;
     public CsMainUI MainUI;
+    public ColorCenter Center;
 
     [SerializeField]
     public Vector3 MovePosition;
@@ -25,12 +26,15 @@ public class CsCheckOnModel : MonoBehaviour
         mesh = GetComponent<MeshRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnEventTargetOn()
     {
-        if(mesh.enabled)
-        {
-            MainUI.TargetModel = this;
-        }
+        Center.OnTargetFind();
+        MainUI.TargetModel = this;
+    }
+
+    public void OnEventTargetOff()
+    {
+        Center.OnTargetLost();
+        MainUI.TargetModel = this;
     }
 }

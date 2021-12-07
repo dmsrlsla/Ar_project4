@@ -41,7 +41,7 @@ public class VuMarkTrackableEventHandler : DefaultTrackableEventHandler
     // Override, but don't implement these base methods,
     // since VuMark gameobjects are automatically disabled
     protected override void OnTrackingFound() { }
-    protected override void OnTrackingLost() { }
+    public override void OnTrackingLost() { }
 
     #endregion // PROTECTED_METHODS
 

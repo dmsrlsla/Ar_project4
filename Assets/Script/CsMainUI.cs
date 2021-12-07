@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Android;
+using Vuforia;
 
 public class CsMainUI : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class CsMainUI : MonoBehaviour
 
     [SerializeField]
     Camera TargetModelcamera;
+
+    [SerializeField]
+    List<DefaultTrackableEventHandler> ListEventHandler = new List<DefaultTrackableEventHandler>();
 
     [SerializeField]
     Material mat;
@@ -56,16 +60,22 @@ public class CsMainUI : MonoBehaviour
     public Texture2D texture;
     public Text console;
     public CanvasGroup ui;
-    public Image screenshot;
+    public UnityEngine.UI.Image screenshot;
     private string paths = null;
 
     CsCheckOnModel m_CheckModel;
     Texture2D m_texIns;
 
     public CsCheckOnModel TargetModel;
+    GameObject TargetImage;
+
+    public bool IsShowMode = false;
     public Transform EndUI { get { return m_EndUI; } }
 
     bool onCapture = false;
+
+    Coroutine coFind;
+
 
     public void PressBtnCapture()
     {
@@ -221,12 +231,18 @@ public class CsMainUI : MonoBehaviour
     {
         if(bFind)
         {
-            StartCoroutine(FindTargetComplate());
+            coFind = StartCoroutine(FindTargetComplate());
         }
         else
         {
+            if (coFind != null)
+            {
+                StopCoroutine(coFind);
+                coFind = null;
+            }
             m_trImgMarkerRed.gameObject.SetActive(true);
             m_trImgMarkerBlue.gameObject.SetActive(false);
+            OnColoringOff();
         }
     }
 
@@ -296,19 +312,25 @@ public class CsMainUI : MonoBehaviour
 
     public void OnColoringOn()
     {
-        m_Btn_ProcessOn.gameObject.SetActive(false);
-        m_Btn_ProcessOff.gameObject.SetActive(true);
+        if (TargetModel != null)
+        {
+            m_Btn_ProcessOn.gameObject.SetActive(false);
+            m_Btn_ProcessOff.gameObject.SetActive(true);
 
-        ColorCenters.ImageWidth = TargetModel.Width;
-        ColorCenters.ImageHeight = TargetModel.Height;
-        ColorCenters.OnColoringOn();
+            ColorCenters.ImageWidth = TargetModel.Width;
+            ColorCenters.ImageHeight = TargetModel.Height;
+            ColorCenters.OnColoringOn();
+        }
     }
 
     public void OnColoringOff()
     {
+        if(TargetModel != null)
+        { 
         m_Btn_ProcessOn.gameObject.SetActive(true);
         m_Btn_ProcessOff.gameObject.SetActive(false);
         ColorCenters.OnColoringOff();
+            }
     }
 
     public void OnComplate()
@@ -317,9 +339,16 @@ public class CsMainUI : MonoBehaviour
         {
             if (TargetModel != null)
             {
+                // 카메라 먼저
+                Arcamera.enabled = false;
+                foreach (DefaultTrackableEventHandler itb in ListEventHandler)
+                {
+                    itb.gameObject.SetActive(false);
+                }
+                IsShowMode = true;
                 m_trProcess.gameObject.SetActive(false);
                 StopCoroutine(ColorCenters.ShotAndColor2());
-                Arcamera.enabled = false;
+
                 TargetModelcamera.gameObject.SetActive(true);
 
                 m_CheckModel = Instantiate<CsCheckOnModel>(TargetModel);
@@ -344,22 +373,35 @@ public class CsMainUI : MonoBehaviour
                 IsComplate = true;
                 StopCoroutine(ColorCenters.ShotAndColor2());
             }
-            else
-            {
-                Debug.LogError("타겟이 없음");
-                FindTargetUI(false);
-                m_trProcess.gameObject.SetActive(true);
-            }
+            //else
+            //{
+            //    // 카메라 먼저
+            //    Arcamera.enabled = true;
+            //    foreach (DefaultTrackableEventHandler itb in ListEventHandler)
+            //    {
+            //        itb.gameObject.SetActive(true);
+            //    }
+            //    IsShowMode = false;
+            //    Debug.LogError("타겟이 없음");
+            //    FindTargetUI(false);
+            //    m_trProcess.gameObject.SetActive(true);
+            //}
         }
         else
         {
-            m_trProcess.gameObject.SetActive(true);
             Arcamera.enabled = true;
+            foreach (DefaultTrackableEventHandler itb in ListEventHandler)
+            {
+                itb.gameObject.SetActive(true);
+            }
+            IsShowMode = false;
+            m_trProcess.gameObject.SetActive(true);
+
             TargetModelcamera.gameObject.SetActive(false);
 
             Destroy(m_CheckModel.gameObject);
             Destroy(m_texIns);
-
+            TargetModel.GetComponent<MeshRenderer>().enabled = false;
             ColorCenters.bStartArCamera = false;
             TargetModel = null;
             IsComplate = false;
@@ -367,7 +409,6 @@ public class CsMainUI : MonoBehaviour
             ColorCenters.OnColoringOff();
             ColorProcessUI(false);
             FindTargetUI(false);
-
         }
     }
 }

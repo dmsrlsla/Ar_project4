@@ -114,9 +114,12 @@ public class ColorCenter : BaseColor
 
     public void OnTargetFind()
     {
-        SetNewMaterial();
-        MainUI.FindTargetUI(true);
-        StartCoroutine(WaitFind());
+        if (!MainUI.IsShowMode)
+        {
+            SetNewMaterial();
+            MainUI.FindTargetUI(true);
+            StartCoroutine(WaitFind());
+        }
     }
 
     public void OnTargetLost()

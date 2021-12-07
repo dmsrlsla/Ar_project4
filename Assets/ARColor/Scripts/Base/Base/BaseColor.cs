@@ -39,7 +39,7 @@ public class BaseColor : MonoBehaviour
     #region protected variable 继承类可用变量
 
 
-    protected Texture2D ColorTe;
+    public Texture2D ColorTe;
 
     //World coordinate of the points on the card
     protected Vector3 TopLeft_Pl_W;
@@ -168,28 +168,35 @@ public class BaseColor : MonoBehaviour
             _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
             _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
             _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
-            ColorTe.ReadPixels(FindRect, 0, 0);
-            ColorTe.Apply();
+            if (ColorTe != null)
+            {
+                ColorTe.ReadPixels(FindRect, 0, 0);
+                ColorTe.Apply();
 
 
-            item.GetComponent<Renderer>().material.mainTexture = ColorTe;
+                item.GetComponent<Renderer>().material.mainTexture = ColorTe;
 
 
-            if(!MainUI.Arcamera.enabled)
+                if (!MainUI.Arcamera.enabled)
+                {
+                    yield return null;
+                }
+                Matrix4x4 P = GL.GetGPUProjectionMatrix(MainUI.Arcamera.projectionMatrix, BLrenderIntoTexture);
+                Matrix4x4 V = MainUI.Arcamera.worldToCameraMatrix;
+                VP = P * V;
+
+
+                item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
+                item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
+                item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
+                item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+
+                item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
+            }
+            else
             {
                 yield return null;
             }
-            Matrix4x4 P = GL.GetGPUProjectionMatrix(MainUI.Arcamera.projectionMatrix, BLrenderIntoTexture);
-            Matrix4x4 V = MainUI.Arcamera.worldToCameraMatrix;
-            VP = P * V;
-
-
-            item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
-            item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
-            item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
-            item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
-
-            item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
         }
     }
 
