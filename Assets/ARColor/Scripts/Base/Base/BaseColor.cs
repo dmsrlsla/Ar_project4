@@ -4,36 +4,20 @@ using UnityEngine;
 
 public class BaseColor : MonoBehaviour
 {
-    #region variable 变量
+    #region variable
 
     public string CardNm = "";
 
     public GameObject[] ColorParts;
-    /// <summary>
-    /// Do you want to render the map
-    /// 是否要渲染贴图
-    /// </summary>
+
     public bool BLrenderIntoTexture = false;
-    /// <summary>
-    /// Transparency texture
-    /// 透明贴图
-    /// </summary>
+
     public Texture Te_Tran;
-    /// <summary>
-    /// Do you want to save the texture
-    /// 是否要保存贴图
-    /// </summary>
+
     public bool IfSaveColor = false;
 
-    /// <summary>
-    /// The width of track image in Unity Engine
-    /// 识别图在Unity中的宽度
-    /// </summary>
     public float ImageWidth = 1f;
-    /// <summary>
-    /// The height of track image in Unity Engine
-    /// 识别图在Unity中的高度
-    /// </summary>
+
     public float ImageHeight = 1f;
 
     #region protected variable 继承类可用变量
@@ -68,13 +52,9 @@ public class BaseColor : MonoBehaviour
 
     public RectTransform rectT;
 
-    public GameObject UICanvas;
-
-    protected CsMainUI MainUI;
-
     protected virtual void Start()
     {
-        MainUI = UICanvas.GetComponent<CsMainUI>();
+
     }
 
     protected void SetNewMaterial()
@@ -177,12 +157,12 @@ public class BaseColor : MonoBehaviour
                 item.GetComponent<Renderer>().material.mainTexture = ColorTe;
 
 
-                if (!MainUI.Arcamera.enabled)
+                if (!ProgramManager.instance.Arcamera.enabled)
                 {
                     yield return null;
                 }
-                Matrix4x4 P = GL.GetGPUProjectionMatrix(MainUI.Arcamera.projectionMatrix, BLrenderIntoTexture);
-                Matrix4x4 V = MainUI.Arcamera.worldToCameraMatrix;
+                Matrix4x4 P = GL.GetGPUProjectionMatrix(ProgramManager.instance.Arcamera.projectionMatrix, BLrenderIntoTexture);
+                Matrix4x4 V = ProgramManager.instance.Arcamera.worldToCameraMatrix;
                 VP = P * V;
 
 

@@ -5,8 +5,6 @@ using UnityEngine;
 public class CsCheckOnModel : MonoBehaviour
 {
     MeshRenderer mesh;
-    public CsMainUI MainUI;
-    public ColorCenter Center;
 
     [SerializeField]
     public Vector3 MovePosition;
@@ -28,13 +26,11 @@ public class CsCheckOnModel : MonoBehaviour
 
     public void OnEventTargetOn()
     {
-        Center.OnTargetFind();
-        MainUI.TargetModel = this;
+        ProgramManager.instance.OnEventTargetOn(this);
     }
 
     public void OnEventTargetOff()
     {
-        Center.OnTargetLost();
-        MainUI.TargetModel = this;
+        ProgramManager.instance.OnEventTargetOff();
     }
 }

@@ -16,9 +16,6 @@ public class ColorCenter : BaseColor
 
     public Dictionary<string, ColorData> Dic_DateAndData;
 
-    public GameObject ARCamera;
-
-
     private bool ifCanColor = true;
 
     public bool bStartArCamera;
@@ -39,7 +36,6 @@ public class ColorCenter : BaseColor
     {
         if (ifCanColor)
         {
-            //MainUI.FindTargetUI(true);
             ShotAndColor();
             ifCanColor = false;
             if (coFindTime == null)
@@ -88,12 +84,6 @@ public class ColorCenter : BaseColor
         SaveColorUtil.GetInstance().DeleteAllColorInfo();
     }
 
-    public void Btn_Start()
-    {
-        //ARCamera.SetActive(true);
-
-    }
-
     public IEnumerator DelayInfinity()
     {
         while(bStartArCamera)
@@ -114,10 +104,10 @@ public class ColorCenter : BaseColor
 
     public void OnTargetFind()
     {
-        if (!MainUI.IsShowMode)
+        if (!ProgramManager.instance.IsShowMode)
         {
             SetNewMaterial();
-            MainUI.FindTargetUI(true);
+            ProgramManager.instance.MainUI.FindTargetUI(true);
             StartCoroutine(WaitFind());
         }
     }
@@ -125,9 +115,9 @@ public class ColorCenter : BaseColor
     public void OnTargetLost()
     {
         ResetMaterial();
-        if (MainUI.Arcamera.enabled)
+        if (ProgramManager.instance.Arcamera.enabled)
         {
-            MainUI.FindTargetUI(false);
+            ProgramManager.instance.MainUI.FindTargetUI(false);
         }
     }
 
