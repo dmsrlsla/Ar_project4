@@ -72,7 +72,7 @@ public class CloudTrackableEventHandler : DefaultTrackableEventHandler
         }
     }
 
-    public override void OnTrackingLost()
+    protected override void OnTrackingLost()
     {
         Debug.Log("<color=blue>OnTrackingLost()</color>");
 

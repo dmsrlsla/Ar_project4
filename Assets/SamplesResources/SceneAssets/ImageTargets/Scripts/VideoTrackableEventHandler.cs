@@ -9,7 +9,7 @@ public class VideoTrackableEventHandler : DefaultTrackableEventHandler
 {
     #region PROTECTED_METHODS
 
-    public override void OnTrackingLost()
+    protected override void OnTrackingLost()
     {
         mTrackableBehaviour.GetComponentInChildren<VideoController>().Pause();
 

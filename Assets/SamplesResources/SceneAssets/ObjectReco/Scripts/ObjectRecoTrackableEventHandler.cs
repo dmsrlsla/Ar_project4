@@ -21,7 +21,7 @@ public class ObjectRecoTrackableEventHandler : DefaultTrackableEventHandler
         m_Astronaut.SetBool("IsWaving", true);
     }
 
-    public override void OnTrackingLost()
+    protected override void OnTrackingLost()
     {
         base.OnTrackingLost();
 

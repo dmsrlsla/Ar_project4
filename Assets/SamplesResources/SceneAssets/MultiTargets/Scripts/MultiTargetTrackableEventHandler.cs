@@ -20,7 +20,7 @@ public class MultiTargetTrackableEventHandler : DefaultTrackableEventHandler
         base.OnTrackingFound();
     }
 
-    public override void OnTrackingLost()
+    protected override void OnTrackingLost()
     {
         astronaut.SetBool("IsDrilling", false);
 
