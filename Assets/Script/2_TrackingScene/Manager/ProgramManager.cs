@@ -102,10 +102,21 @@ public class ProgramManager : MonoBehaviour
     /// 모델에서 검출이 되면, 타겟을 찾고 해당 타겟 모델을 등록함
     /// </summary>
     /// <param name="_NewTargetModel"></param>
-    public void OnEventTargetOn(CsCheckOnModel _NewTargetModel)
+    public void OnEventTargetOn(CsCheckOnModel NewTargetModel)
     {
+        if(_TargetModel != null)
+        {
+            ColorCenters.StopColoring();
+            Arcamera.enabled = false;
+            Arcamera.enabled = true;
+            OnViewModeOn();
+            OnViewModeOff();
+            OnEventTargetOff();
+            OnColoringOn();
+            _TargetModel = null;
+        }
         ColorCenters.OnTargetFind();
-        _TargetModel = _NewTargetModel;
+        _TargetModel = NewTargetModel;
     }
 
     /// <summary>
@@ -114,6 +125,8 @@ public class ProgramManager : MonoBehaviour
     public void OnEventTargetOff()
     {
         ColorCenters.OnTargetLost();
+
+        _TargetModel.GetComponent<MeshRenderer>().enabled = false;
         _TargetModel = null;
     }
 
@@ -213,7 +226,7 @@ public class ProgramManager : MonoBehaviour
         IsComplate = false;
         // 컬러링 기능을 끕니다.
 
-        ColorCenters.OnColoringOff();
+        //ColorCenters.OnColoringOff();
 
         // 더미 모델이 있다면, 제거합니다.
         if (m_CheckModel != null)

@@ -61,7 +61,7 @@ public class BaseColor : MonoBehaviour
     {
         Half_W = 0.5f * ImageWidth;
         Half_H = 0.5f * ImageHeight;
-
+        Center_Card = new Vector3();
         TopLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, Half_H);
         BottomLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, -Half_H);
         TopRight_Pl_W = Center_Card + new Vector3(Half_W, 0, Half_H);
@@ -84,98 +84,103 @@ public class BaseColor : MonoBehaviour
         TopRight_Pl_W = Vector3.zero;
         BottomRight_Pl_W = Vector3.zero;
         ColorTe = null;
-        FindRect = new Rect(0, 0, Screen.width, Screen.height);
+        FindRect = Rect.zero;
         _UvTopLeft = Vector4.zero;
         _UvButtomLeft = Vector4.zero;
         _UvTopRight = Vector4.zero;
         _UvBottomRight = Vector4.zero;
+        VP = Matrix4x4.identity;
     }
 
 
     public void ShotAndColor()
     {
-        foreach (var item in ColorParts)
-        {
-            Vector3[] corners = new Vector3[4];
-            rectT.GetWorldCorners(corners);
-            var startX = corners[0].x;
-            var startY = corners[0].y;
+        //foreach (var item in ColorParts)
+        //{
+        //    Vector3[] corners = new Vector3[4];
+        //    rectT.GetWorldCorners(corners);
+        //    var startX = corners[0].x;
+        //    var startY = corners[0].y;
 
-            int width = (int)corners[3].x - (int)corners[0].x;
-            int height = (int)corners[1].y - (int)corners[0].y;
-            FindRect = new Rect(0, 0, Screen.width, Screen.height);
-            _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
-            _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
-            _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
-            _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
-            ColorTe.ReadPixels(FindRect, 0, 0);
-            ColorTe.Apply();
-
-
-            item.GetComponent<Renderer>().material.mainTexture = ColorTe;
+        //    int width = (int)corners[3].x - (int)corners[0].x;
+        //    int height = (int)corners[1].y - (int)corners[0].y;
+        //    FindRect = new Rect(0, 0, Screen.width, Screen.height);
+        //    _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
+        //    _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
+        //    _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
+        //    _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
+        //    ColorTe.ReadPixels(FindRect, 0, 0);
+        //    ColorTe.Apply();
 
 
-            Matrix4x4 P = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, BLrenderIntoTexture);
-            Matrix4x4 V = Camera.main.worldToCameraMatrix;
-            VP = P * V;
+        //    item.GetComponent<Renderer>().material.mainTexture = ColorTe;
 
 
-            item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
-            item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
-            item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
-            item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+        //    Matrix4x4 P = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, BLrenderIntoTexture);
+        //    Matrix4x4 V = Camera.main.worldToCameraMatrix;
+        //    VP = P * V;
 
-            item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
-        }
+
+        //    item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
+        //    item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
+        //    item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
+        //    item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+
+        //    item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
+        //}
     }
 
     public IEnumerator ShotAndColor2()
     {
 
-        foreach (var item in ColorParts)
+        if (!ProgramManager.instance.Arcamera.enabled)
         {
-            Half_W = 0.5f * ImageWidth;
-            Half_H = 0.5f * ImageHeight;
-
-            TopLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, Half_H);
-            BottomLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, -Half_H);
-            TopRight_Pl_W = Center_Card + new Vector3(Half_W, 0, Half_H);
-            BottomRight_Pl_W = Center_Card + new Vector3(Half_W, 0, -Half_H);
-
-            yield return new WaitForEndOfFrame();
-            FindRect = new Rect(0, 0, Screen.width, Screen.height);
-            _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
-            _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
-            _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
-            _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
-            if (ColorTe != null)
+            yield return null;
+        }
+        else
+        {
+            foreach (var item in ColorParts)
             {
-                ColorTe.ReadPixels(FindRect, 0, 0);
-                ColorTe.Apply();
+                Half_W = 0.5f * ImageWidth;
+                Half_H = 0.5f * ImageHeight;
+
+                TopLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, Half_H);
+                BottomLeft_Pl_W = Center_Card + new Vector3(-Half_W, 0, -Half_H);
+                TopRight_Pl_W = Center_Card + new Vector3(Half_W, 0, Half_H);
+                BottomRight_Pl_W = Center_Card + new Vector3(Half_W, 0, -Half_H);
+
+                yield return new WaitForEndOfFrame();
+                FindRect = new Rect(0, 0, Screen.width, Screen.height);
+                _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
+                _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
+                _UvTopRight = new Vector4(TopRight_Pl_W.x, TopRight_Pl_W.y, TopRight_Pl_W.z, 1f);
+                _UvBottomRight = new Vector4(BottomRight_Pl_W.x, BottomRight_Pl_W.y, BottomRight_Pl_W.z, 1f);
+
+                if (ColorTe != null)
+                {
+                    ColorTe.ReadPixels(FindRect, 0, 0);
+                    ColorTe.Apply();
 
 
-                item.GetComponent<Renderer>().material.mainTexture = ColorTe;
+                    item.GetComponent<Renderer>().material.mainTexture = ColorTe;
 
 
-                if (!ProgramManager.instance.Arcamera.enabled)
+                    Matrix4x4 P = GL.GetGPUProjectionMatrix(ProgramManager.instance.Arcamera.projectionMatrix, BLrenderIntoTexture);
+                    Matrix4x4 V = ProgramManager.instance.Arcamera.worldToCameraMatrix;
+                    VP = P * V;
+
+
+                    item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
+                    item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
+                    item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
+                    item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
+
+                    item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
+                }
+                else
                 {
                     yield return null;
                 }
-                Matrix4x4 P = GL.GetGPUProjectionMatrix(ProgramManager.instance.Arcamera.projectionMatrix, BLrenderIntoTexture);
-                Matrix4x4 V = ProgramManager.instance.Arcamera.worldToCameraMatrix;
-                VP = P * V;
-
-
-                item.GetComponent<Renderer>().material.SetVector("_UvTopLeft", _UvTopLeft);
-                item.GetComponent<Renderer>().material.SetVector("_UvButtomLeft", _UvButtomLeft);
-                item.GetComponent<Renderer>().material.SetVector("_UvTopRight", _UvTopRight);
-                item.GetComponent<Renderer>().material.SetVector("_UvBottomRight", _UvBottomRight);
-
-                item.GetComponent<Renderer>().material.SetMatrix("_VP", VP);
-            }
-            else
-            {
-                yield return null;
             }
         }
     }
