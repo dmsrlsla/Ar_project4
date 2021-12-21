@@ -25,13 +25,13 @@ public class ColorCenter : BaseColor
 
     Coroutine coFindTime = null;
 
-    PlaneManager plane;
+    //PlaneManager plane;
 
     protected override void Start()
     {
         base.Start();
 
-        plane = new PlaneManager();
+      //  plane = new PlaneManager();
     }
 
     #region 사용하지 않는 기존 앱 스크립트

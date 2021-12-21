@@ -57,6 +57,27 @@ public class CsStartUI : MonoBehaviour
     bool ResetTutoria_Please_Uncheck_For_Build = false;
 
     //스와이프와 터치
+    void Start()
+    {
+        listTr.Add(m_trTutorialPage.GetChild(0));
+        listTr.Add(m_trTutorialPage.GetChild(1));
+        listTr.Add(m_trTutorialPage.GetChild(2));
+
+        PageNum = listTr.Count;
+
+        m_trClosetPage.gameObject.SetActive(false);
+
+        firstTouch = false;
+        ///
+        /// 빌드시 씬에서 반드시 체크를 해제하십시오!!!
+        /// 튜토리얼씬에서 무한 리셋이 됩니다.
+        if (ResetTutoria_Please_Uncheck_For_Build == true)
+        {
+            Debug.LogError("Reset");
+            PlayerPrefs.SetInt("CheckFirst", 0);
+            PlayerPrefs.Save();
+        }
+    }
     public void Swipe1()
     {
         if (Input.touchCount > 0)
@@ -77,9 +98,9 @@ public class CsStartUI : MonoBehaviour
                 {
                     m_trTutorialPage.position = new Vector3(0, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
                 }
-                else if (m_trTutorialPage.position.x < -2 * Screen.width * Maincanvas.transform.localScale.x)
+                else if (m_trTutorialPage.position.x < -(m_trTutorialPage.childCount - 1) * Screen.width * Maincanvas.transform.localScale.x)
                 {
-                    m_trTutorialPage.position = new Vector3(-2 * Screen.width * Maincanvas.transform.localScale.x, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
+                    m_trTutorialPage.position = new Vector3(-(m_trTutorialPage.childCount-1) * Screen.width * Maincanvas.transform.localScale.x, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
                 }
                 else
                 {
@@ -104,9 +125,9 @@ public class CsStartUI : MonoBehaviour
                             bNextSlide = true;
 
                             PageNum2++;
-                            if (PageNum2 >= 2)
+                            if (PageNum2 >= (m_trTutorialPage.childCount - 1))
                             {
-                                PageNum2 = 2;
+                                PageNum2 = (m_trTutorialPage.childCount - 1);
                             }
                         }
                         else
@@ -166,9 +187,9 @@ public class CsStartUI : MonoBehaviour
             {
                 m_trTutorialPage.position = new Vector3(0, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
             }
-            else if (m_trTutorialPage.position.x < -2 * Screen.width * Maincanvas.transform.localScale.x)
+            else if (m_trTutorialPage.position.x < -(m_trTutorialPage.childCount - 1) * Screen.width * Maincanvas.transform.localScale.x)
             {
-                m_trTutorialPage.position = new Vector3(-2 * Screen.width * Maincanvas.transform.localScale.x, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
+                m_trTutorialPage.position = new Vector3(-(m_trTutorialPage.childCount - 1) * Screen.width * Maincanvas.transform.localScale.x, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
             }
             else
             {
@@ -193,9 +214,9 @@ public class CsStartUI : MonoBehaviour
                         bNextSlide = true;
 
                         PageNum2++;
-                        if (PageNum2 >= 2)
+                        if (PageNum2 >= (m_trTutorialPage.childCount - 1))
                         {
-                            PageNum2 = 2;
+                            PageNum2 = (m_trTutorialPage.childCount - 1);
                         }
                     }
                     else
@@ -252,27 +273,7 @@ public class CsStartUI : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
-    { 
-        listTr.Add(m_trTutorialPage.GetChild(0));
-        listTr.Add(m_trTutorialPage.GetChild(1));
-        listTr.Add(m_trTutorialPage.GetChild(2));
 
-        PageNum = listTr.Count;
-
-        m_trClosetPage.gameObject.SetActive(false);
-
-        firstTouch = false;
-        ///
-        /// 빌드시 씬에서 반드시 체크를 해제하십시오!!!
-        /// 튜토리얼씬에서 무한 리셋이 됩니다.
-        if (ResetTutoria_Please_Uncheck_For_Build == true)
-        {
-            Debug.LogError("Reset");
-            PlayerPrefs.SetInt("CheckFirst", 0);
-            PlayerPrefs.Save();
-        }
-    }
 
     // Update is called once per frame
     void Update()
