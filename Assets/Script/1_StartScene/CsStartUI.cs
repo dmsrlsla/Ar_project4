@@ -36,8 +36,6 @@ public class CsStartUI : MonoBehaviour
     [SerializeField]
     private float MouseSwipeSensitivity = 200;
 
-    private int PageNum = 0;
-
     private int PageNum2 = 0;
 
     List<Transform> listTr = new List<Transform>();
@@ -56,14 +54,15 @@ public class CsStartUI : MonoBehaviour
     [SerializeField]
     bool ResetTutoria_Please_Uncheck_For_Build = false;
 
+    [SerializeField]
+    bool Tutoria_Touch = false;
+
     //스와이프와 터치
     void Start()
     {
         listTr.Add(m_trTutorialPage.GetChild(0));
         listTr.Add(m_trTutorialPage.GetChild(1));
         listTr.Add(m_trTutorialPage.GetChild(2));
-
-        PageNum = listTr.Count;
 
         m_trClosetPage.gameObject.SetActive(false);
 
@@ -77,8 +76,13 @@ public class CsStartUI : MonoBehaviour
             PlayerPrefs.SetInt("CheckFirst", 0);
             PlayerPrefs.Save();
         }
+
+
+        // 시작시 위치 고정(시작시 위치 엇나가는 버그 수정)
+        m_trTutorialPage.position = new Vector3(0, m_trTutorialPage.position.y, m_trTutorialPage.position.z);
     }
-    public void Swipe1()
+    // 안드로이드형 슬라이딩
+    public void Swipe_Slide_Android()
     {
         if (Input.touchCount > 0)
         {
@@ -169,7 +173,8 @@ public class CsStartUI : MonoBehaviour
             // 로딩 끝날시 처리.
     }
 
-    public void Swipe2()
+    // 에디터용 슬라이드
+    public void Swipe_Slide_Editor()
     {
         // 로딩 끝날시 처리.
         if (Input.GetMouseButtonDown(0))
@@ -206,7 +211,6 @@ public class CsStartUI : MonoBehaviour
 
             if (MouseDif.x > 0)
             {
-                Debug.LogError("MouseDif.x" + MouseDif.x);
                 //if (Mathf.Abs(MouseDif.x) > MouseSwipeSensitivity)
                 {
                     if (Mathf.Abs(MouseDif.x) > MouseSwipeSensitivity)
@@ -229,7 +233,6 @@ public class CsStartUI : MonoBehaviour
             }
             else if (MouseDif.x < 0)
             {
-                Debug.LogError("MouseDif.x" + MouseDif.x);
                 //if (Mathf.Abs(MouseDif.x) > MouseSwipeSensitivity)
                 {
                     if (Mathf.Abs(MouseDif.x) > MouseSwipeSensitivity)
@@ -255,24 +258,85 @@ public class CsStartUI : MonoBehaviour
         }
     }
 
-    private void OnTutorialSlide(Transform trTutorial)
+    // Start is called before the first frame update
+    // 안드로이드형 터치
+    public void Swipe_Touch_Android()
     {
-        //Animator animator = trTutorial.GetComponent<Animator>();
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                MouseBeganPos = touch.position;
+                //MouseDrawPos = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
 
-        //if (animator == null)
-        //    return;
+                MouseEndedPos = touch.position;
 
-        //if(!animator.enabled)
-        //{
-        //    animator.enabled = true;
-        //}
-        //else
-        //{
-        //    animator.SetBool("Next", true);
-        //}
+                MouseDif = MouseBeganPos - MouseEndedPos;
+
+                if (MouseEndedPos.x > Screen.width / 2)
+                {
+                    PageNum2++;
+                    if (PageNum2 > listTr.Count - 1)
+                    {
+                        PageNum2 = listTr.Count - 1;
+                    }
+                }
+                else
+                {
+                    PageNum2--;
+                    if (PageNum2 < 0)
+                    {
+                        PageNum2 = 0;
+                    }
+                }
+                m_trTutorialPage.DOMoveX((-(PageNum2) * Screen.width) * Maincanvas.transform.localScale.x, 0.5f);
+
+            }
+
+        }
+        // 로딩 끝날시 처리.
+    }
+    // 안드로이드형 슬라이딩
+    public void Swipe_Touch_Editor()
+    {
+        // 로딩 끝날시 처리.
+        if (Input.GetMouseButtonDown(0))
+        {
+            MouseBeganPos = Input.mousePosition;
+            //MouseDrawPos = Input.mousePosition;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+
+            MouseEndedPos = Input.mousePosition;
+
+            MouseDif = MouseBeganPos - MouseEndedPos;
+
+            if (MouseEndedPos.x > Screen.width / 2 )
+            {
+                PageNum2++;
+                if(PageNum2 > listTr.Count - 1)
+                {
+                    PageNum2 = listTr.Count - 1;
+                }
+            }
+            else
+            {
+                PageNum2--;
+                if (PageNum2 < 0)
+                {
+                    PageNum2 = 0;
+                }
+            }
+            m_trTutorialPage.DOMoveX((-(PageNum2) * Screen.width) * Maincanvas.transform.localScale.x, 0.5f);
+
+        }
     }
 
-    // Start is called before the first frame update
 
 
     // Update is called once per frame
@@ -299,8 +363,16 @@ public class CsStartUI : MonoBehaviour
         }
         else if (TutorialTouch == true) // 튜토리얼 활성화중이라면
         {
-            // 튜토리얼 슬라이드
-            Swipe2();
+            if(Tutoria_Touch)
+            {
+                // 튜토리얼 터치
+                Swipe_Touch_Editor();
+            }
+            else
+            {
+                // 튜토리얼 슬라이드
+                Swipe_Slide_Editor();
+            }
         }
 #endif
 #if UNITY_ANDROID || UNITY_IOS
@@ -325,8 +397,16 @@ public class CsStartUI : MonoBehaviour
         }
         else if (TutorialTouch == true) // 튜토리얼 활성화중이라면
         {
-            // 튜토리얼 슬라이드
-            Swipe1();
+            if (Tutoria_Touch)
+            {
+                // 튜토리얼 터치
+                Swipe_Touch_Android();
+            }
+            else
+            {
+                // 튜토리얼 슬라이드
+                Swipe_Slide_Android();
+            }
         }
 #endif
     }
