@@ -187,18 +187,16 @@ public class CsMainUI : MonoBehaviour
     {
         if (ProgramManager.instance.TargetModel != null)
         {
-            m_Btn_ProcessOn.gameObject.SetActive(false);
-            m_Btn_ProcessOff.gameObject.SetActive(true);
+            ColorProcessUI(true);
             ProgramManager.instance.OnColoringOn();
         }
     }
 
     public void OnColoringOff()
     {
-        if(ProgramManager.instance.TargetModel != null)
-        { 
-            m_Btn_ProcessOn.gameObject.SetActive(true);
-            m_Btn_ProcessOff.gameObject.SetActive(false);
+        //if(ProgramManager.instance.TargetModel != null)
+        {
+            ColorProcessUI(false);
             ProgramManager.instance.OnColoringOff();
         }
     }

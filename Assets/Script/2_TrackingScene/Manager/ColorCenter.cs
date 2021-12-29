@@ -107,10 +107,10 @@ public class ColorCenter : BaseColor
     /// </summary>
     public void OnTargetFind()
     {
-        ResetMaterial();// 택스쳐를 리셋합니다.
-        ResetModel();
         if (!ProgramManager.instance.IsComplate)
         {
+            ResetMaterial();// 택스쳐를 리셋합니다.
+            ResetModel();
             SetNewMaterial(); // 베이스 컬러에서 메테리얼을 새로이 구성합니다.
             ProgramManager.instance.MainUI.FindTargetUI(true);
         }
@@ -121,7 +121,7 @@ public class ColorCenter : BaseColor
     {
         ResetMaterial();// 택스쳐를 리셋합니다.
         ResetModel();
-        if (ProgramManager.instance.Arcamera.enabled)
+        if (ProgramManager.instance.Arcamera.enabled && ProgramManager.instance.TargetModel == null)
         {
             ProgramManager.instance.MainUI.FindTargetUI(false);
         }
