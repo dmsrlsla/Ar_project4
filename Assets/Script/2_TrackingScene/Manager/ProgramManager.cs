@@ -107,12 +107,6 @@ public class ProgramManager : MonoBehaviour
         if(_TargetModel != null)
         {
             ColorCenters.StopColoring();
-            Arcamera.enabled = false;
-            Arcamera.enabled = true;
-            OnViewModeOn();
-            OnViewModeOff();
-            OnEventTargetOff();
-            OnColoringOn();
             _TargetModel = null;
         }
         ColorCenters.OnTargetFind();
@@ -124,10 +118,11 @@ public class ProgramManager : MonoBehaviour
     /// </summary>
     public void OnEventTargetOff()
     {
-        ColorCenters.OnTargetLost();
-
         _TargetModel.GetComponent<MeshRenderer>().enabled = false;
         _TargetModel = null;
+
+        ColorCenters.OnTargetLost();
+
     }
 
     /// <summary>
