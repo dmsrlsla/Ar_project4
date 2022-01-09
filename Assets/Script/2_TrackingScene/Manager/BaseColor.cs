@@ -132,7 +132,6 @@ public class BaseColor : MonoBehaviour
 
     public IEnumerator ShotAndColor2()
     {
-
         if (!ProgramManager.instance.Arcamera.enabled)
         {
             yield return null;

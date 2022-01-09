@@ -88,8 +88,6 @@ public class ProgramManager : MonoBehaviour
     /// 카메라 캡쳐 실행입니다.
     /// 갤러리에 현재 캡쳐화면을 저장합니다. MainUI호출
     /// </summary>
-
-
     public void OnClickCapture()
     {
         if (onCapture == false)
@@ -104,9 +102,10 @@ public class ProgramManager : MonoBehaviour
     /// <param name="_NewTargetModel"></param>
     public void OnEventTargetOn(CsCheckOnModel NewTargetModel)
     {
-        if(_TargetModel != null)
+        ColorCenters.StopColoring();
+        if (_TargetModel != null)
         {
-            ColorCenters.StopColoring();
+            //ColorCenters.StopColoring();
             _TargetModel = null;
         }
         ColorCenters.OnTargetFind();
@@ -118,6 +117,7 @@ public class ProgramManager : MonoBehaviour
     /// </summary>
     public void OnEventTargetOff()
     {
+        ColorCenters.StopColoring();
         _TargetModel.GetComponent<MeshRenderer>().enabled = false;
         _TargetModel = null;
 
