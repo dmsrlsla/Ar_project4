@@ -131,7 +131,11 @@ public class CsMainUI : MonoBehaviour
         m_trImgMarkerBlue.gameObject.SetActive(false);
     }
 
-
+    public void TargetMakerUIOff()
+    {
+        m_trImgMarkerRed.gameObject.SetActive(false);
+        m_trImgMarkerBlue.gameObject.SetActive(false);
+    }
 
 
     /// <summary>
@@ -209,11 +213,14 @@ public class CsMainUI : MonoBehaviour
         // 뷰모드가 실행되지 않고, 검색된 모델이 있으며, 현재 컬러링 기능이 실행중이라면(색이 입혔다면)
         if (!ProgramManager.instance.IsComplate && ProgramManager.instance.TargetModel != null && ProgramManager.instance.ColorCenters.bStartColoring)
         {
+
             ProgramManager.instance.OnViewModeOn();
+            TargetMakerUIOff();
             m_trProcess.gameObject.SetActive(false);
         }
         else if(ProgramManager.instance.IsComplate) // 아니라면 그냥 리셋.
         {
+            FindTargetUI(true);
             ProgramManager.instance.OnViewModeOff();
             m_trProcess.gameObject.SetActive(true);
             ColorProcessUI(false);

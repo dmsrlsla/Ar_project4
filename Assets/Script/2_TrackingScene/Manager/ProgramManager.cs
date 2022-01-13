@@ -161,8 +161,7 @@ public class ProgramManager : MonoBehaviour
     /// </summary>
     public void OnViewModeOn()
     {
-        // AR 카메라 먼저 종료합니다.
-        Arcamera.enabled = false;
+
         //foreach (DefaultTrackableEventHandler itb in ListEventHandler)
         //{
         //    itb.gameObject.SetActive(false);
@@ -197,13 +196,16 @@ public class ProgramManager : MonoBehaviour
 
         // 색칠기능은 뷰모드에서 정지합니다.
         ColorCenters.OnColoringOff();
+
+        // AR 카메라 먼저 종료합니다.
+        Arcamera.gameObject.SetActive(false);
     }
     /// <summary>
     /// 뷰 모드를 종료하고 다시 AR카메라로 돌아옴
     /// </summary>
     public void OnViewModeOff()
     {
-        Arcamera.enabled = true;
+
         //foreach (DefaultTrackableEventHandler itb in ListEventHandler)
         //{
         //    itb.gameObject.SetActive(true);
@@ -230,6 +232,7 @@ public class ProgramManager : MonoBehaviour
             Destroy(m_CheckModel.gameObject);
             m_CheckModel = null;
         }
+        Arcamera.gameObject.SetActive(true);
     }
 
     /// <summary>
