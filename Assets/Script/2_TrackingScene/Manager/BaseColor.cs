@@ -25,6 +25,9 @@ public class BaseColor : MonoBehaviour
 
     public Texture2D ColorTe;
 
+    [SerializeField]
+    public Camera UICamera;
+
     //World coordinate of the points on the card
     protected Vector3 TopLeft_Pl_W;
     protected Vector3 BottomLeft_Pl_W;
@@ -140,6 +143,7 @@ public class BaseColor : MonoBehaviour
         {
             foreach (var item in ColorParts)
             {
+
                 Half_W = 0.5f * ImageWidth;
                 Half_H = 0.5f * ImageHeight;
 
@@ -149,6 +153,7 @@ public class BaseColor : MonoBehaviour
                 BottomRight_Pl_W = Center_Card + new Vector3(Half_W, 0, -Half_H);
 
                 yield return new WaitForEndOfFrame();
+
                 FindRect = new Rect(0, 0, Screen.width, Screen.height);
                 _UvTopLeft = new Vector4(TopLeft_Pl_W.x, TopLeft_Pl_W.y, TopLeft_Pl_W.z, 1f);
                 _UvButtomLeft = new Vector4(BottomLeft_Pl_W.x, BottomLeft_Pl_W.y, BottomLeft_Pl_W.z, 1f);
@@ -157,8 +162,16 @@ public class BaseColor : MonoBehaviour
 
                 if (ColorTe != null)
                 {
+                    //RenderTexture render = ProgramManager.instance.Arcamera.targetTexture;
+                    //RenderTexture.active = render;
+                    //ProgramManager.instance.Arcamera.Render();
                     ColorTe.ReadPixels(FindRect, 0, 0);
                     ColorTe.Apply();
+
+                    //RenderTexture.active = null;
+                    //ProgramManager.instance.Arcamera.targetTexture = null;
+
+
 
 
                     item.GetComponent<Renderer>().material.mainTexture = ColorTe;
@@ -180,6 +193,7 @@ public class BaseColor : MonoBehaviour
                 {
                     yield return null;
                 }
+
             }
         }
     }
@@ -212,7 +226,7 @@ public class BaseColor : MonoBehaviour
         yield return new WaitForEndOfFrame();
         //yield return null;  //When public you can use this
 
-        ColorTe = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        ColorTe = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false, true);
         ColorTe.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         ColorTe.Apply();
 

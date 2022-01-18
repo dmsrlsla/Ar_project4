@@ -245,6 +245,10 @@ public class CsMainUI : MonoBehaviour
 
     public void OnBtnReturn()
     {
-        SceneManager.LoadScene("StartScene");
+        if (ProgramManager.instance.IsComplate)
+        {
+            Debug.LogError("¤¶¤§¤¤¤µ2");
+            OnComplate();
+        }
     }
 }
